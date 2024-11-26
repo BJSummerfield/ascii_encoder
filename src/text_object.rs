@@ -13,13 +13,13 @@ struct Frame {
 }
 
 pub struct TextObject {
-    length: usize,
+    frame_resolution: usize,
     input_dir: Vec<DirEntry>,
     writer: BufWriter<GzEncoder<File>>,
 }
 
 impl TextObject {
-    pub fn new(length: usize, input_dir: &str, output_file: &str) -> Result<TextObject> {
+    pub fn new(frame_resolution: usize, input_dir: &str, output_file: &str) -> Result<TextObject> {
         let input_dir = Self::collect_files(input_dir)?;
         let output_file = File::create(format!("./output/{}.gzip", output_file))?;
 
@@ -27,7 +27,7 @@ impl TextObject {
         let writer = BufWriter::new(gz_encoder);
 
         let text_object = TextObject {
-            length,
+            frame_resolution,
             input_dir,
             writer,
         };
@@ -55,7 +55,11 @@ impl TextObject {
             let frame = Frame { content };
             let encoded: Vec<u8> = bitcode::encode(&frame);
 
-            assert_eq!(encoded.len(), self.length, "Encoded frame size mismatch");
+            assert_eq!(
+                encoded.len(),
+                self.frame_resolution,
+                "Encoded frame size mismatch"
+            );
             self.writer.write_all(&encoded)?;
         }
         self.writer.flush()?;
