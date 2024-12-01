@@ -1,14 +1,15 @@
+mod ascii;
 mod error;
-mod text_object;
 
+use ascii::Parser;
 use error::Result;
-use text_object::TextObject;
 
 fn main() -> Result<()> {
-    let input_dir = "./input";
-    let output_file = "badapple.bitcode";
-    let frame_resolution = 3496;
-    let mut text_object = TextObject::new(frame_resolution, input_dir, output_file)?;
-    text_object.convert_frames_to_bitcode()?;
+    let frames_directory = "./input/frames_thor_ascii";
+
+    let output_file = "thor.delta.bitcode";
+    let width = 172;
+    let mut parser = Parser::new(frames_directory, output_file, width)?;
+    parser.convert_frames_to_bitcode()?;
     Ok(())
 }

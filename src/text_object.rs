@@ -14,13 +14,17 @@ struct Frame {
 
 pub struct TextObject {
     frame_resolution: usize,
-    input_dir: Vec<DirEntry>,
+    frames_directory: Vec<DirEntry>,
     writer: BufWriter<GzEncoder<File>>,
 }
 
 impl TextObject {
-    pub fn new(frame_resolution: usize, input_dir: &str, output_file: &str) -> Result<TextObject> {
-        let input_dir = Self::collect_files(input_dir)?;
+    pub fn new(
+        frame_resolution: usize,
+        frames_directory: &str,
+        output_file: &str,
+    ) -> Result<TextObject> {
+        let frames_directory = Self::collect_files(frames_directory)?;
         let output_file = File::create(format!("./output/{}.gzip", output_file))?;
 
         let gz_encoder = GzEncoder::new(output_file, Compression::default());
@@ -28,14 +32,14 @@ impl TextObject {
 
         let text_object = TextObject {
             frame_resolution,
-            input_dir,
+            frames_directory,
             writer,
         };
         Ok(text_object)
     }
 
-    fn collect_files(input_dir: &str) -> Result<Vec<DirEntry>> {
-        let mut files: Vec<DirEntry> = fs::read_dir(input_dir)?
+    fn collect_files(frames_directory: &str) -> Result<Vec<DirEntry>> {
+        let mut files: Vec<DirEntry> = fs::read_dir(frames_directory)?
             .filter_map(std::io::Result::ok)
             .filter(|entry| entry.path().is_file())
             .collect();
@@ -46,7 +50,7 @@ impl TextObject {
     }
 
     pub fn convert_frames_to_bitcode(&mut self) -> Result<()> {
-        for file in self.input_dir.iter() {
+        for file in self.frames_directory.iter() {
             let path = file.path();
             let file_name = path.file_name().unwrap().to_string_lossy();
 
