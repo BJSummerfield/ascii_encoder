@@ -1,7 +1,8 @@
-use crate::ascii::{Frame, ReferenceFrame};
-use crate::error::Result;
-use flate2::write::GzEncoder;
-use flate2::Compression;
+use crate::{
+    ascii::{Frame, ReferenceFrame},
+    error::Result,
+};
+use flate2::{write::GzEncoder, Compression};
 use regex::Regex;
 use std::{
     fs::{self, DirEntry, File},
