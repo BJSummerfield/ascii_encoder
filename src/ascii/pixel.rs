@@ -2,18 +2,21 @@ use bitcode::{Decode, Encode};
 
 #[derive(Encode, Decode, Debug, Clone)]
 pub struct Pixel {
-    pub x: usize,
-    pub y: usize,
-    value: char,
-    color: (u8, u8, u8),
+    pub id: u16,
+    pub char_id: u8,
+    pub color_id: u16,
 }
 
 impl Pixel {
-    pub fn new(x: usize, y: usize, value: char, color: (u8, u8, u8)) -> Self {
-        Pixel { x, y, value, color }
+    pub fn new(id: u16, char_id: u8, color_id: u16) -> Self {
+        Pixel {
+            id,
+            char_id,
+            color_id,
+        }
     }
 
     pub fn is_different(&self, other: &Pixel) -> bool {
-        self.value != other.value || self.color != other.color
+        self.char_id != other.char_id || self.color_id != other.color_id
     }
 }
