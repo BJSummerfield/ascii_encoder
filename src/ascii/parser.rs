@@ -61,12 +61,11 @@ impl Parser {
             frame_from_file.capture_pixels(&content, &self.regex, self.ref_width)?;
 
             let delta_frame = self.reference_frame.create_delta_frame(&frame_from_file);
-            println!("Delta frame: {:?}", delta_frame);
             self.reference_frame.apply_delta(&delta_frame);
 
             let encoded_frame: Vec<u8> = bitcode::encode(&delta_frame);
 
-            let frame_length = (encoded_frame.len() as u16).to_le_bytes();
+            let frame_length = (encoded_frame.len() as u32).to_le_bytes();
             self.writer.write_all(&frame_length)?;
             self.writer.write_all(&encoded_frame)?;
 
